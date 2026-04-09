@@ -62,12 +62,16 @@ function switchLoginRole(role, el) {
   document.getElementById('login-password').value = '';
   clearAlert(document.getElementById('login-alert'));
 
+  const signupLink = document.querySelector('#pg-login .form-footer-link');
+
   if (role === 'admin') {
     lbl.textContent = 'Admin Username';
     inp.placeholder = 'admin@ghrcemp.raisoni.net';
+    if (signupLink) signupLink.style.display = 'none';
   } else {
     lbl.textContent = 'College Email';
     inp.placeholder = 'yourname@ghrcemp.raisoni.net';
+    if (signupLink) signupLink.style.display = 'block';
   }
 }
 
@@ -126,11 +130,16 @@ async function doSignup() {
     showAlert(box, 'danger', 'Password must be at least 6 characters.'); return;
   }
 
-  try {
-    const data = await apiCall('/auth/signup', 'POST', { name, email, roll, password: pass });
-    showAlert(box, 'success', data.message + ' Redirecting to login...');
-    setTimeout(() => { clearAlert(box); showPage('pg-login'); }, 1500);
-  } catch (err) {
+    try {
+      const data = await apiCall('/auth/signup', 'POST', { name, email, roll, password: pass });
+      showAlert(box, 'success', data.message + ' Redirecting to login...');
+      setTimeout(() => { 
+        clearAlert(box); 
+        // Reset login role to student, since only students can sign up
+        switchLoginRole('student', document.querySelectorAll('.role-tab')[0]);
+        showPage('pg-login'); 
+      }, 1500);
+    } catch (err) {
     showAlert(box, 'danger', err.message);
   }
 }
