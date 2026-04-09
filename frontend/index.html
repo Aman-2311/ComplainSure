@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
@@ -140,20 +140,25 @@
     <div class="form-wrap">
       <div class="form-card">
         <h2>Create Account</h2>
-        <p class="form-sub">Only G H Raisoni students can register</p>
+        <p class="form-sub" id="su-form-sub">Only G H Raisoni students can register</p>
         <div id="signup-alert"></div>
 
+        <div class="role-tabs">
+          <button class="role-tab su-role-tab active" onclick="switchSignupRole('student', this)">Student</button>
+          <button class="role-tab su-role-tab" onclick="switchSignupRole('admin', this)">Admin</button>
+        </div>
+
         <div class="field">
-          <label>Full Name</label>
+          <label id="su-name-label">Full Name</label>
           <input type="text" id="su-name" placeholder="As per college records"/>
         </div>
         <div class="field">
-          <label>College Email</label>
+          <label id="su-email-label">College Email</label>
           <input type="email" id="su-email" placeholder="yourname@ghrcemp.raisoni.net"/>
-          <span class="hint">Must end with @ghrcemp.raisoni.net</span>
+          <span class="hint" id="su-email-hint">Must end with @ghrcemp.raisoni.net</span>
           <span class="err-msg" id="err-email">Please use your college email (@ghrcemp.raisoni.net)</span>
         </div>
-        <div class="field">
+        <div class="field" id="su-roll-field">
           <label>Universal Roll Number</label>
           <input type="text" id="su-roll" placeholder="Enter your universal roll number"/>
           <span class="hint">Enter your college universal roll number</span>

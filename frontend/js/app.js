@@ -67,7 +67,7 @@ function switchLoginRole(role, el) {
   if (role === 'admin') {
     lbl.textContent = 'Admin Username';
     inp.placeholder = 'admin@ghrcemp.raisoni.net';
-    if (signupLink) signupLink.style.display = 'none';
+    if (signupLink) signupLink.style.display = 'block';
   } else {
     lbl.textContent = 'College Email';
     inp.placeholder = 'yourname@ghrcemp.raisoni.net';
@@ -103,6 +103,45 @@ async function doLogin() {
   }
 }
 
+let signupRole = 'student';
+
+function switchSignupRole(role, el) {
+  signupRole = role;
+  document.querySelectorAll('.su-role-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+
+  const nameLbl = document.getElementById('su-name-label');
+  const emailLbl = document.getElementById('su-email-label');
+  const rollFld = document.getElementById('su-roll-field');
+  const emailHint = document.getElementById('su-email-hint');
+  const formSub = document.getElementById('su-form-sub');
+
+  document.getElementById('su-name').value = '';
+  document.getElementById('su-email').value = '';
+  document.getElementById('su-pass').value = '';
+  document.getElementById('su-confirm').value = '';
+  if (document.getElementById('su-roll')) document.getElementById('su-roll').value = '';
+  clearAlert(document.getElementById('signup-alert'));
+
+  if (role === 'admin') {
+    nameLbl.textContent = 'Display Name';
+    document.getElementById('su-name').placeholder = 'e.g. Prof. Smith';
+    emailLbl.textContent = 'Admin Username (Email)';
+    document.getElementById('su-email').placeholder = 'admin@ghrcemp.raisoni.net';
+    if (rollFld) rollFld.style.display = 'none';
+    if (emailHint) emailHint.style.display = 'none';
+    if (formSub) formSub.textContent = 'Register a new admin account';
+  } else {
+    nameLbl.textContent = 'Full Name';
+    document.getElementById('su-name').placeholder = 'As per college records';
+    emailLbl.textContent = 'College Email';
+    document.getElementById('su-email').placeholder = 'yourname@ghrcemp.raisoni.net';
+    if (rollFld) rollFld.style.display = 'block';
+    if (emailHint) emailHint.style.display = 'block';
+    if (formSub) formSub.textContent = 'Only G H Raisoni students can register';
+  }
+}
+
 async function doSignup() {
   const name    = document.getElementById('su-name').value.trim();
   const email   = document.getElementById('su-email').value.trim().toLowerCase();
@@ -114,10 +153,13 @@ async function doSignup() {
   document.getElementById('err-email').classList.remove('show');
   document.getElementById('err-pass').classList.remove('show');
 
-  if (!name || !email || !roll || !pass || !confirm) {
+  if (!name || !email || !pass || !confirm) {
     showAlert(box, 'danger', 'All fields are required.'); return;
   }
-  if (!email.endsWith('@ghrcemp.raisoni.net')) {
+  if (signupRole === 'student' && !roll) {
+    showAlert(box, 'danger', 'All fields are required.'); return;
+  }
+  if (signupRole === 'student' && !email.endsWith('@ghrcemp.raisoni.net')) {
     document.getElementById('err-email').classList.add('show');
     showAlert(box, 'danger', 'Please use your college email (@ghrcemp.raisoni.net).');
     return;
@@ -130,16 +172,28 @@ async function doSignup() {
     showAlert(box, 'danger', 'Password must be at least 6 characters.'); return;
   }
 
-    try {
-      const data = await apiCall('/auth/signup', 'POST', { name, email, roll, password: pass });
-      showAlert(box, 'success', data.message + ' Redirecting to login...');
-      setTimeout(() => { 
-        clearAlert(box); 
-        // Reset login role to student, since only students can sign up
-        switchLoginRole('student', document.querySelectorAll('.role-tab')[0]);
-        showPage('pg-login'); 
-      }, 1500);
-    } catch (err) {
+  try {
+    let endpoint = '/auth/signup';
+    let body = { name, email, roll, password: pass };
+    
+    if (signupRole === 'admin') {
+      endpoint = '/auth/signup/admin';
+      body = { displayName: name, username: email, password: pass };
+    }
+
+    const data = await apiCall(endpoint, 'POST', body);
+    showAlert(box, 'success', data.message + ' Redirecting to login...');
+    setTimeout(() => { 
+      clearAlert(box); 
+      // Reset login role to match the newly created account.
+      // Assuming the tabs exist in pg-login: Student is index 0, Admin is index 1.
+      const loginTabs = document.querySelectorAll('#pg-login .role-tab');
+      if (loginTabs.length > 1) {
+        switchLoginRole(signupRole, loginTabs[signupRole === 'admin' ? 1 : 0]);
+      }
+      showPage('pg-login'); 
+    }, 1500);
+  } catch (err) {
     showAlert(box, 'danger', err.message);
   }
 }

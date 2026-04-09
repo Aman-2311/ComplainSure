@@ -1,4 +1,4 @@
-﻿const express = require('express');
+const express = require('express');
 const bcrypt  = require('bcryptjs');
 const jwt     = require('jsonwebtoken');
 const { pool } = require('../db');
@@ -60,6 +60,44 @@ router.post('/signup', async (req, res) => {
 
     conn.release();
     res.json({ message: 'Account created successfully! Please log in.' });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error. Please try again.' });
+  }
+});
+
+// admin signup
+router.post('/signup/admin', async (req, res) => {
+  const { displayName, username, password } = req.body;
+
+  if (!displayName || !username || !password) {
+    return res.status(400).json({ error: 'All fields are required.' });
+  }
+
+  if (password.length < 6) {
+    return res.status(400).json({ error: 'Password must be at least 6 characters.' });
+  }
+
+  try {
+    const conn = await pool.getConnection();
+
+    // check if username already exists
+    const [adminCheck] = await conn.execute('SELECT id FROM admins WHERE username = ?', [username]);
+    if (adminCheck.length > 0) {
+      conn.release();
+      return res.status(400).json({ error: 'Account with this username already exists.' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await conn.execute(
+      'INSERT INTO admins (username, password, display_name) VALUES (?,?,?)',
+      [username, hashedPassword, displayName]
+    );
+
+    conn.release();
+    res.json({ message: 'Admin account created successfully! Please log in.' });
 
   } catch (err) {
     console.error(err);
