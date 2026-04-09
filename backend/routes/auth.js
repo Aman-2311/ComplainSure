@@ -67,44 +67,6 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-// admin signup
-router.post('/signup/admin', async (req, res) => {
-  const { displayName, username, password } = req.body;
-
-  if (!displayName || !username || !password) {
-    return res.status(400).json({ error: 'All fields are required.' });
-  }
-
-  if (password.length < 6) {
-    return res.status(400).json({ error: 'Password must be at least 6 characters.' });
-  }
-
-  try {
-    const conn = await pool.getConnection();
-
-    // check if username already exists
-    const [adminCheck] = await conn.execute('SELECT id FROM admins WHERE username = ?', [username]);
-    if (adminCheck.length > 0) {
-      conn.release();
-      return res.status(400).json({ error: 'Account with this username already exists.' });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    await conn.execute(
-      'INSERT INTO admins (username, password, display_name) VALUES (?,?,?)',
-      [username, hashedPassword, displayName]
-    );
-
-    conn.release();
-    res.json({ message: 'Admin account created successfully! Please log in.' });
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Server error. Please try again.' });
-  }
-});
-
 // student login
 router.post('/login/student', async (req, res) => {
   const { email, password } = req.body;
@@ -152,6 +114,23 @@ router.post('/login/student', async (req, res) => {
   }
 });
 
+// HARDCODED ADMIN PROFILES
+// ONLY add emails and details here manually to grant access
+const HARDCODED_ADMINS = [
+  { 
+    username: 'admin@ghrcemp.raisoni.net', 
+    password: 'adminpassword', 
+    role: 'admin', 
+    display_name: 'Admin' 
+  },
+  { 
+    username: 'head@ghrcemp.raisoni.net', 
+    password: 'headpassword', 
+    role: 'head_admin', 
+    display_name: 'Head Admin' 
+  }
+];
+
 // admin login
 router.post('/login/admin', async (req, res) => {
   const { username, password } = req.body;
@@ -161,23 +140,20 @@ router.post('/login/admin', async (req, res) => {
   }
 
   try {
-    const conn = await pool.getConnection();
-    const [rows] = await conn.execute('SELECT * FROM admins WHERE username = ?', [username]);
-    conn.release();
+    // Check against hardcoded array instead of database for absolute security
+    const admin = HARDCODED_ADMINS.find(a => a.username === username);
 
-    if (rows.length === 0) {
+    if (!admin) {
       return res.status(401).json({ error: 'Invalid credentials.' });
     }
 
-    const admin = rows[0];
-    const match = await bcrypt.compare(password, admin.password);
-
-    if (!match) {
+    // Direct string comparison since passwords are hardcoded (no bcrypt needed here)
+    if (admin.password !== password) {
       return res.status(401).json({ error: 'Invalid credentials.' });
     }
 
     const token = jwt.sign(
-      { id: admin.id, username: admin.username, role: admin.role, displayName: admin.display_name },
+      { username: admin.username, role: admin.role, displayName: admin.display_name },
       process.env.JWT_SECRET,
       { expiresIn: '8h' }
     );
