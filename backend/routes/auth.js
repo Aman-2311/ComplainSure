@@ -1,6 +1,6 @@
-const express = require('express');
-const bcrypt  = require('bcryptjs');
-const jwt     = require('jsonwebtoken');
+﻿const express = require('express');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const { pool } = require('../db');
 
 const router = express.Router();
@@ -85,7 +85,7 @@ router.post('/login/student', async (req, res) => {
     }
 
     const student = rows[0];
-    const match   = await bcrypt.compare(password, student.password);
+    const match = await bcrypt.compare(password, student.password);
 
     if (!match) {
       return res.status(401).json({ error: 'Invalid email or password.' });
@@ -101,10 +101,10 @@ router.post('/login/student', async (req, res) => {
     res.json({
       token,
       user: {
-        name:         student.name,
-        email:        student.email,
+        name: student.name,
+        email: student.email,
         complainantId: student.complainant_id,
-        role:         'student'
+        role: 'student'
       }
     });
 
@@ -117,17 +117,17 @@ router.post('/login/student', async (req, res) => {
 // HARDCODED ADMIN PROFILES
 // ONLY add emails and details here manually to grant access
 const HARDCODED_ADMINS = [
-  { 
-    username: 'admin@ghrcemp.raisoni.net', 
-    password: 'adminpassword', 
-    role: 'admin', 
-    display_name: 'Admin' 
+  {
+    username: 'aman08@ghrcemp.raisoni.net',
+    password: '080808',
+    role: 'admin',
+    display_name: 'Admin'
   },
-  { 
-    username: 'head@ghrcemp.raisoni.net', 
-    password: 'headpassword', 
-    role: 'head_admin', 
-    display_name: 'Head Admin' 
+  {
+    username: 'admin00@ghrcemp.raisoni.net',
+    password: '123456',
+    role: 'head_admin',
+    display_name: 'Head Admin'
   }
 ];
 
@@ -161,8 +161,8 @@ router.post('/login/admin', async (req, res) => {
     res.json({
       token,
       user: {
-        username:    admin.username,
-        role:        admin.role,
+        username: admin.username,
+        role: admin.role,
         displayName: admin.display_name
       }
     });
