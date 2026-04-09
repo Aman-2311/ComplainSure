@@ -1,0 +1,388 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ComplainSure — Smart Complaint Management</title>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<!-- home page -->
+<div class="page active" id="pg-home">
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo-wrap">
+        <div class="logo-badge">CS</div>
+        <div>
+          <div class="logo-college">G H Raisoni College of Engineering &amp; Management</div>
+          <div class="logo-system">ComplainSure</div>
+        </div>
+      </div>
+      <nav class="header-nav">
+        <a onclick="showPage('pg-login')">Login</a>
+        <button class="btn btn-gold btn-sm" onclick="showPage('pg-signup')">Sign Up</button>
+      </nav>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="hero">
+      <div>
+        <h1>Smart Complaint<br>Management for<br><span>Students</span></h1>
+        <p>Submit complaints, track their progress in real time, and stay informed at every step — all in one secure platform.</p>
+        <p>Your identity stays protected. Admins only see your unique anonymous ID.</p>
+        <div class="hero-btns">
+          <button class="btn btn-gold" onclick="showPage('pg-login')">Login</button>
+          <button class="btn btn-outline" onclick="showPage('pg-signup')">Create Account</button>
+        </div>
+      </div>
+      <div class="feat-cards">
+        <div class="feat-card">
+          <div class="feat-icon">🔒</div>
+          <div>
+            <h3>Anonymous by Design</h3>
+            <p>Your identity is protected. Admins only see your unique complaint ID.</p>
+          </div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🕐</div>
+          <div>
+            <h3>Live Status Tracking</h3>
+            <p>Follow every stage of your complaint from submission to resolution.</p>
+          </div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">✅</div>
+          <div>
+            <h3>Verified Students Only</h3>
+            <p>College email verification ensures only authentic complaints are filed.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    ComplainSure &copy; 2024 — G H Raisoni College of Engineering &amp; Management, Wagholi, Pune
+  </footer>
+</div>
+
+<!-- login page -->
+<div class="page" id="pg-login">
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo-wrap">
+        <div class="logo-badge">CS</div>
+        <div>
+          <div class="logo-college">G H Raisoni College of Engineering &amp; Management</div>
+          <div class="logo-system">ComplainSure</div>
+        </div>
+      </div>
+      <nav class="header-nav">
+        <a onclick="showPage('pg-home')">Home</a>
+        <a onclick="showPage('pg-signup')">Sign Up</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="form-wrap">
+      <div class="form-card">
+        <h2>Welcome Back</h2>
+        <p class="form-sub">Log in to your ComplainSure account</p>
+        <div id="login-alert"></div>
+
+        <div class="role-tabs">
+          <button class="role-tab active" onclick="switchLoginRole('student', this)">Student</button>
+          <button class="role-tab" onclick="switchLoginRole('admin', this)">Admin</button>
+        </div>
+
+        <div class="field">
+          <label id="login-email-label">College Email</label>
+          <input type="text" id="login-email" placeholder="yourname@ghrcemp.raisoni.net"/>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" id="login-password" placeholder="Enter password"/>
+        </div>
+
+        <button class="btn btn-navy btn-full" onclick="doLogin()">Login</button>
+        <p class="form-footer-link">Don't have an account? <a onclick="showPage('pg-signup')">Sign Up</a></p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    ComplainSure &copy; 2024 — G H Raisoni College of Engineering &amp; Management, Wagholi, Pune
+  </footer>
+</div>
+
+<!-- signup page -->
+<div class="page" id="pg-signup">
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo-wrap">
+        <div class="logo-badge">CS</div>
+        <div>
+          <div class="logo-college">G H Raisoni College of Engineering &amp; Management</div>
+          <div class="logo-system">ComplainSure</div>
+        </div>
+      </div>
+      <nav class="header-nav">
+        <a onclick="showPage('pg-home')">Home</a>
+        <a onclick="showPage('pg-login')">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="form-wrap">
+      <div class="form-card">
+        <h2>Create Account</h2>
+        <p class="form-sub">Only G H Raisoni students can register</p>
+        <div id="signup-alert"></div>
+
+        <div class="field">
+          <label>Full Name</label>
+          <input type="text" id="su-name" placeholder="As per college records"/>
+        </div>
+        <div class="field">
+          <label>College Email</label>
+          <input type="email" id="su-email" placeholder="yourname@ghrcemp.raisoni.net"/>
+          <span class="hint">Must end with @ghrcemp.raisoni.net</span>
+          <span class="err-msg" id="err-email">Please use your college email (@ghrcemp.raisoni.net)</span>
+        </div>
+        <div class="field">
+          <label>Universal Roll Number</label>
+          <input type="text" id="su-roll" placeholder="Enter your universal roll number"/>
+          <span class="hint">Enter your college universal roll number</span>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" id="su-pass" placeholder="Minimum 6 characters"/>
+        </div>
+        <div class="field">
+          <label>Confirm Password</label>
+          <input type="password" id="su-confirm" placeholder="Re-enter password"/>
+          <span class="err-msg" id="err-pass">Passwords do not match</span>
+        </div>
+
+        <button class="btn btn-navy btn-full" onclick="doSignup()">Create Account</button>
+        <p class="form-footer-link">Already have an account? <a onclick="showPage('pg-login')">Login</a></p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    ComplainSure &copy; 2024 — G H Raisoni College of Engineering &amp; Management, Wagholi, Pune
+  </footer>
+</div>
+
+<!-- student dashboard -->
+<div class="page" id="pg-student">
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo-wrap">
+        <div class="logo-badge">CS</div>
+        <div>
+          <div class="logo-college">G H Raisoni College of Engineering &amp; Management</div>
+          <div class="logo-system">ComplainSure</div>
+        </div>
+      </div>
+      <nav class="header-nav">
+        <a onclick="showPage('pg-home')" class="nav-back-link">← Home</a>
+        <a onclick="showPage('pg-student')">Dashboard</a>
+        <a onclick="showPage('pg-submit')">New Complaint</a>
+        <span class="nav-user" id="s-nav-name"></span>
+        <button class="nav-logout" onclick="doLogout()">Logout</button>
+      </nav>
+    </div>
+  </header>
+
+  <div class="main">
+    <div id="student-alert"></div>
+    <div class="page-hdr">
+      <div>
+        <h2>My Complaints</h2>
+        <p>Your anonymous ID: <span class="id-tag" id="s-anon-id"></span></p>
+      </div>
+      <button class="btn btn-gold" onclick="showPage('pg-submit')">+ New Complaint</button>
+    </div>
+    <div id="s-complaint-list"></div>
+  </div>
+
+  <footer class="site-footer">
+    ComplainSure &copy; 2024 — G H Raisoni College of Engineering &amp; Management, Wagholi, Pune
+  </footer>
+</div>
+
+<!-- submit complaint page -->
+<div class="page" id="pg-submit">
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo-wrap">
+        <div class="logo-badge">CS</div>
+        <div>
+          <div class="logo-college">G H Raisoni College of Engineering &amp; Management</div>
+          <div class="logo-system">ComplainSure</div>
+        </div>
+      </div>
+      <nav class="header-nav">
+        <a onclick="showPage('pg-student')" class="nav-back-link">← Back</a>
+        <a onclick="showPage('pg-student')">Dashboard</a>
+        <span class="nav-user" id="s-nav-name2"></span>
+        <button class="nav-logout" onclick="doLogout()">Logout</button>
+      </nav>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="form-wrap">
+      <div class="form-card wide">
+        <h2>Submit a Complaint</h2>
+        <p class="form-sub">Filed under anonymous ID: <strong id="submit-anon-id"></strong></p>
+        <div id="submit-alert"></div>
+
+        <div class="field">
+          <label>Category</label>
+          <select id="c-cat">
+            <option value="" disabled selected>Select a category</option>
+            <option>Hostel</option>
+            <option>Academics</option>
+            <option>Infrastructure</option>
+            <option>Administration</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Subject</label>
+          <input type="text" id="c-subject" placeholder="Brief title of the complaint" maxlength="100"/>
+        </div>
+        <div class="field">
+          <label>Description</label>
+          <textarea id="c-desc" rows="5" placeholder="Describe your complaint in detail..."></textarea>
+        </div>
+
+        <button class="btn btn-navy btn-full" onclick="doSubmit()">Submit Complaint</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    ComplainSure &copy; 2024 — G H Raisoni College of Engineering &amp; Management, Wagholi, Pune
+  </footer>
+</div>
+
+<!-- track complaint page -->
+<div class="page" id="pg-track">
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo-wrap">
+        <div class="logo-badge">CS</div>
+        <div>
+          <div class="logo-college">G H Raisoni College of Engineering &amp; Management</div>
+          <div class="logo-system">ComplainSure</div>
+        </div>
+      </div>
+      <nav class="header-nav">
+        <a onclick="showPage('pg-student')" class="nav-back-link">← Back</a>
+        <a onclick="showPage('pg-student')">Dashboard</a>
+        <button class="nav-logout" onclick="doLogout()">Logout</button>
+      </nav>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="track-wrap" id="track-content"></div>
+  </div>
+
+  <footer class="site-footer">
+    ComplainSure &copy; 2024 — G H Raisoni College of Engineering &amp; Management, Wagholi, Pune
+  </footer>
+</div>
+
+<!-- admin dashboard -->
+<div class="page" id="pg-admin">
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo-wrap">
+        <div class="logo-badge">CS</div>
+        <div>
+          <div class="logo-college">G H Raisoni College of Engineering &amp; Management</div>
+          <div class="logo-system">ComplainSure</div>
+        </div>
+      </div>
+      <nav class="header-nav">
+        <a onclick="showPage('pg-home')" class="nav-back-link">← Home</a>
+        <span class="nav-user" id="a-nav-name"></span>
+        <button class="nav-logout" onclick="doLogout()">Logout</button>
+      </nav>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="page-hdr">
+      <div>
+        <h2>Admin Dashboard</h2>
+        <p id="a-role-label"></p>
+      </div>
+    </div>
+    <div class="count-row" id="a-counts"></div>
+    <div class="filter-bar">
+      <select id="f-status" onchange="renderAdminList()">
+        <option value="">All Statuses</option>
+        <option>Submitted</option>
+        <option>Under Review</option>
+        <option>In Progress</option>
+        <option>Resolved</option>
+        <option>Closed</option>
+      </select>
+      <select id="f-cat" onchange="renderAdminList()">
+        <option value="">All Categories</option>
+        <option>Hostel</option>
+        <option>Academics</option>
+        <option>Infrastructure</option>
+        <option>Administration</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div id="a-complaint-list"></div>
+  </div>
+
+  <footer class="site-footer">
+    ComplainSure &copy; 2024 — G H Raisoni College of Engineering &amp; Management, Wagholi, Pune
+  </footer>
+</div>
+
+<!-- admin complaint detail -->
+<div class="page" id="pg-detail">
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo-wrap">
+        <div class="logo-badge">CS</div>
+        <div>
+          <div class="logo-college">G H Raisoni College of Engineering &amp; Management</div>
+          <div class="logo-system">ComplainSure</div>
+        </div>
+      </div>
+      <nav class="header-nav">
+        <a onclick="showPage('pg-admin')" class="nav-back-link">← Back</a>
+        <a onclick="showPage('pg-admin')">Dashboard</a>
+        <button class="nav-logout" onclick="doLogout()">Logout</button>
+      </nav>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="track-wrap" id="detail-content"></div>
+  </div>
+
+  <footer class="site-footer">
+    ComplainSure &copy; 2024 — G H Raisoni College of Engineering &amp; Management, Wagholi, Pune
+  </footer>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
