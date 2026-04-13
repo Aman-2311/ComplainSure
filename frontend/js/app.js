@@ -1,8 +1,6 @@
 // config
 
-const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-  ? '/api' 
-  : 'https://complainsure-production.up.railway.app/api';
+const API = '/api';
 const STAGES = ['Submitted', 'Under Review', 'In Progress', 'Resolved', 'Closed'];
 
 // session data
