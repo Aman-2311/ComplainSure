@@ -25,7 +25,7 @@ app.use('/api/admin',     adminRoutes);
 
 // fallback to index.html
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/index.html'));
+  res.sendFile(path.join(__dirname, '../index.html'));
 });
 
 // start server
