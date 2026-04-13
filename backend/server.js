@@ -30,8 +30,8 @@ app.get('*', (req, res) => {
 
 // start server
 initDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`✅ ComplainSure running at http://localhost:${PORT}`);
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`✅ ComplainSure running on port ${PORT} (0.0.0.0)`);
   });
 }).catch(err => {
   console.error('❌ Database connection failed:', err.message);
