@@ -15,9 +15,9 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// serve frontend and css
-app.use(express.static(path.join(__dirname, '../frontend')));
+// serve static assets
 app.use('/css', express.static(path.join(__dirname, '../css')));
+app.use('/js',  express.static(path.join(__dirname, '../js')));
 
 // api routes
 app.use('/api/auth',      authRoutes);
