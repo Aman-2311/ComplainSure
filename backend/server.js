@@ -15,9 +15,8 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// serve static assets
-app.use('/css', express.static(path.join(__dirname, '../css')));
-app.use('/js',  express.static(path.join(__dirname, '../js')));
+// serve frontend
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // api routes
 app.use('/api/auth',      authRoutes);
@@ -26,7 +25,7 @@ app.use('/api/admin',     adminRoutes);
 
 // fallback to index.html
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../index.html'));
+  res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
 // start server
