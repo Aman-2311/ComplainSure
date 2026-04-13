@@ -1,11 +1,11 @@
 // config
 
-const API = '/api';
+const API = 'https://complainsure-production.up.railway.app/api';
 const STAGES = ['Submitted', 'Under Review', 'In Progress', 'Resolved', 'Closed'];
 
 // session data
-let currentUser  = JSON.parse(localStorage.getItem('cs_session')) || null;
-let loginRole    = 'student';
+let currentUser = JSON.parse(localStorage.getItem('cs_session')) || null;
+let loginRole = 'student';
 
 // api helper function
 
@@ -15,14 +15,14 @@ async function apiCall(endpoint, method = 'GET', body = null) {
   const options = {
     method,
     headers: {
-      'Content-Type':  'application/json',
+      'Content-Type': 'application/json',
       ...(token ? { 'Authorization': `Bearer ${token}` } : {})
     },
     ...(body ? { body: JSON.stringify(body) } : {})
   };
 
   const res = await fetch(API + endpoint, options);
-  
+
   let data;
   const contentType = res.headers.get('content-type');
   if (contentType && contentType.includes('application/json')) {
@@ -44,8 +44,8 @@ function showPage(id) {
   window.scrollTo(0, 0);
 
   if (id === 'pg-student') renderStudentDashboard();
-  if (id === 'pg-submit')  prepSubmit();
-  if (id === 'pg-admin')   renderAdminDashboard();
+  if (id === 'pg-submit') prepSubmit();
+  if (id === 'pg-admin') renderAdminDashboard();
 }
 
 // restore session on page load
@@ -85,8 +85,8 @@ function switchLoginRole(role, el) {
 
 async function doLogin() {
   const email = document.getElementById('login-email').value.trim().toLowerCase();
-  const pass  = document.getElementById('login-password').value;
-  const box   = document.getElementById('login-alert');
+  const pass = document.getElementById('login-password').value;
+  const box = document.getElementById('login-alert');
 
   if (!email || !pass) { showAlert(box, 'danger', 'Please fill in all fields.'); return; }
 
@@ -112,12 +112,12 @@ async function doLogin() {
 }
 
 async function doSignup() {
-  const name    = document.getElementById('su-name').value.trim();
-  const email   = document.getElementById('su-email').value.trim().toLowerCase();
-  const roll    = document.getElementById('su-roll').value.trim();
-  const pass    = document.getElementById('su-pass').value;
+  const name = document.getElementById('su-name').value.trim();
+  const email = document.getElementById('su-email').value.trim().toLowerCase();
+  const roll = document.getElementById('su-roll').value.trim();
+  const pass = document.getElementById('su-pass').value;
   const confirm = document.getElementById('su-confirm').value;
-  const box     = document.getElementById('signup-alert');
+  const box = document.getElementById('signup-alert');
 
   document.getElementById('err-email').classList.remove('show');
   document.getElementById('err-pass').classList.remove('show');
@@ -141,10 +141,10 @@ async function doSignup() {
   try {
     const data = await apiCall('/auth/signup', 'POST', { name, email, roll, password: pass });
     showAlert(box, 'success', data.message + ' Redirecting to login...');
-    setTimeout(() => { 
-      clearAlert(box); 
+    setTimeout(() => {
+      clearAlert(box);
       switchLoginRole('student', document.querySelectorAll('.role-tab')[0]);
-      showPage('pg-login'); 
+      showPage('pg-login');
     }, 1500);
   } catch (err) {
     showAlert(box, 'danger', err.message);
@@ -162,7 +162,7 @@ function doLogout() {
 async function renderStudentDashboard() {
   if (!currentUser) return;
   document.getElementById('s-nav-name').textContent = currentUser.name;
-  document.getElementById('s-anon-id').textContent  = currentUser.complainantId;
+  document.getElementById('s-anon-id').textContent = currentUser.complainantId;
 
   const box = document.getElementById('s-complaint-list');
   box.innerHTML = '<p style="color:var(--muted);font-size:13px">Loading...</p>';
@@ -208,15 +208,15 @@ async function renderStudentDashboard() {
 
 function prepSubmit() {
   if (!currentUser) return;
-  document.getElementById('s-nav-name2').textContent    = currentUser.name;
+  document.getElementById('s-nav-name2').textContent = currentUser.name;
   document.getElementById('submit-anon-id').textContent = currentUser.complainantId;
 }
 
 async function doSubmit() {
-  const category    = document.getElementById('c-cat').value;
-  const subject     = document.getElementById('c-subject').value.trim();
+  const category = document.getElementById('c-cat').value;
+  const subject = document.getElementById('c-subject').value.trim();
   const description = document.getElementById('c-desc').value.trim();
-  const box         = document.getElementById('submit-alert');
+  const box = document.getElementById('submit-alert');
 
   if (!category || !subject || !description) {
     showAlert(box, 'danger', 'All fields are required.'); return;
@@ -225,9 +225,9 @@ async function doSubmit() {
   try {
     const data = await apiCall('/complaint/submit', 'POST', { category, subject, description });
 
-    document.getElementById('c-cat').value     = '';
+    document.getElementById('c-cat').value = '';
     document.getElementById('c-subject').value = '';
-    document.getElementById('c-desc').value    = '';
+    document.getElementById('c-desc').value = '';
 
     showAlert(document.getElementById('student-alert'), 'success', `Complaint submitted! ID: ${data.complaintId}`);
     openTrack(data.complaintId);
@@ -310,11 +310,11 @@ async function renderAdminDashboard() {
 }
 
 async function renderAdminList() {
-  const status   = document.getElementById('f-status').value;
+  const status = document.getElementById('f-status').value;
   const category = document.getElementById('f-cat').value;
 
   let endpoint = '/admin/complaints?';
-  if (status)   endpoint += `status=${status}&`;
+  if (status) endpoint += `status=${status}&`;
   if (category) endpoint += `category=${category}`;
 
   const box = document.getElementById('a-complaint-list');
@@ -324,7 +324,7 @@ async function renderAdminList() {
     const { complaints, counts } = await apiCall(endpoint);
 
     // status count cards
-    const allStatuses = ['Submitted','Under Review','In Progress','Resolved','Closed'];
+    const allStatuses = ['Submitted', 'Under Review', 'In Progress', 'Resolved', 'Closed'];
     document.getElementById('a-counts').innerHTML = allStatuses.map(s => {
       const found = counts.find(c => c.status === s);
       return `<div class="count-card">
@@ -444,8 +444,8 @@ async function openDetail(complaintId) {
 async function updateStatus(complaintId) {
   const status = document.getElementById('d-status').value;
   const remark = document.getElementById('d-remark').value.trim();
-  const eta    = document.getElementById('d-eta').value.trim();
-  const box    = document.getElementById('detail-alert');
+  const eta = document.getElementById('d-eta').value.trim();
+  const box = document.getElementById('detail-alert');
 
   if (!remark) { showAlert(box, 'danger', 'Please add a remark before updating.'); return; }
 
