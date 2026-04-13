@@ -21,10 +21,18 @@ async function apiCall(endpoint, method = 'GET', body = null) {
     ...(body ? { body: JSON.stringify(body) } : {})
   };
 
-  const res  = await fetch(API + endpoint, options);
-  const data = await res.json();
+  const res = await fetch(API + endpoint, options);
+  
+  let data;
+  const contentType = res.headers.get('content-type');
+  if (contentType && contentType.includes('application/json')) {
+    data = await res.json();
+  } else {
+    const text = await res.text();
+    throw new Error(text || `Server returned ${res.status}`);
+  }
 
-  if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+  if (!res.ok) throw new Error(data?.error || 'Something went wrong.');
   return data;
 }
 
